@@ -1,8 +1,9 @@
 const  graphql = require('graphql');
-const _ = require('lodash');  
+// Importing our book and author Mongo models
 const BookModel = require('./../models/book');
 const AuthorModel = require('./../models/author');
 
+//then we extrapolate graphql methods from the graphql package
 const { 
     GraphQLObjectType, 
     GraphQLString, 
@@ -11,7 +12,7 @@ const {
     GraphQLInt,
     GraphQLList
 } = graphql;
-//define schema
+//Define schemas for aur graphql queries 
 const BookType = new GraphQLObjectType({
     name: 'Book',
     fields: () => ({
@@ -27,6 +28,7 @@ const BookType = new GraphQLObjectType({
         author: {
             type: AuthorType,
             resolve(parent, args){
+                //parent is equal to the book model and we get the autorId from the book model
                 return AuthorModel.findById(parent.authorId)
             }
 
