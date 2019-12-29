@@ -1,18 +1,9 @@
 import React, { useState, useEffect}from 'react';
-//package to make request to the graphql server
-import { gql } from 'apollo-boost';
+
 //bind graphql to react
 import{ graphql } from 'react-apollo'
 //wuery to get books from the graphql sserver
-const getBooksQuery = gql`
-    {
-        books{
-            name
-            id
-        }
-    }
-`;
- 
+import { getBooksQuery} from './../queries/queries'
 
 function BookList(props) {
     const [books, setBooks] = useState([]); 

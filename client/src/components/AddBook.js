@@ -1,19 +1,16 @@
 import React from 'react';
-import { gql, } from "apollo-boost";
 import { graphql, Mutation } from 'react-apollo'
+import {getAuthors} from './../queries/queries'
 
-const getAuthors = gql`
-   { 
-       authors{
-        name,
-        id
-        }   
-    }
-`;
+// const addBook = gql`
+//     mutation addBook( name, genre, authorId){
 
+//     }
+// `;
 
 function AddBook(props) {
     return (
+        // <Mutation>
         <form id="add-book">
         <div className="field">
             <label>Book name:</label>
@@ -42,7 +39,7 @@ function AddBook(props) {
         <button>+</button>
 
     </form>
-
+    // </Mutation>
     )
 }
 
