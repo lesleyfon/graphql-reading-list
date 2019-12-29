@@ -5,8 +5,8 @@ import BookList from './components/BookList';
 //Apollo Client setUp
 const Client = new ApolloClient({
     //endpoint we are making request to 
-    uri: `http://localhost:4040/graphql`
-});
+    uri: `http://localhost:4040/graphql`     
+}) 
 
 
 function App() {
