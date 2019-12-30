@@ -4,6 +4,7 @@ import React, { useState, useEffect}from 'react';
 import{ graphql } from 'react-apollo'
 //wuery to get books from the graphql sserver
 import { getBooksQuery} from './../queries/queries'
+import BookDetails from './BookDetails';
 
 function BookList(props) {
     const [books, setBooks] = useState([]); 
@@ -31,6 +32,7 @@ function BookList(props) {
                     </>
                 }
             </ul>
+            <BookDetails />
         </div>
     )
 }
