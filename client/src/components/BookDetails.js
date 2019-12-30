@@ -3,13 +3,42 @@ import { graphql } from 'react-apollo';
 import {getBookQuery} from "./../queries/queries"
 
 
-function BookDetails({data}) {
-    console.log(data)
+function BookDetails(props) {
+    const {book} = props.data;
+    const displayBookDetails = () => {
+        if(book){
+            return (
+                <div>
+                    <h2>{book.name}</h2>
+                    <p>{book.genre}</p>
+                    <p>{book.author.name}</p>
+                    <p>All books By {book.author.name}</p>
+                    <ul className='other-books'>
+                        {book.author.book.map(item => <li key={item.id}>{item.name}</li>)}
+                    </ul>
+                </div>
+            )
+        }else{
+            return (
+                <div>
+                    No book Selected
+                </div>
+            )
+        }
+    }
     return (
         <div id='book-details'>
-            <p>book details</p>
+            {displayBookDetails()}
         </div>
     )
 }
 
-export default graphql(getBookQuery)(BookDetails)
+export default graphql(getBookQuery, {
+    options: (props) => {
+        return{
+            variables: {
+                id: props.bookId
+            }
+        }
+    }
+})(BookDetails)

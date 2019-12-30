@@ -8,6 +8,7 @@ import BookDetails from './BookDetails';
 
 function BookList(props) {
     const [books, setBooks] = useState([]); 
+    const [bookId, setBookId ] = useState(null)
     useEffect(() => {
        fetchBooks();
     });
@@ -15,6 +16,10 @@ function BookList(props) {
     const fetchBooks = ()=> {
         setBooks(props.data.books)
     } 
+    const handleCLick = (e, id) => {
+        e.preventDefault()
+        setBookId(id)
+    }
     return (
         <div>
             <ul id='book-list'>
@@ -26,13 +31,13 @@ function BookList(props) {
                         {
                            
                             books.map(book =>
-                                 <li key={book.id}>{book.name}</li>
+                                 <li key={book.id} onClick={e => handleCLick(e, book.id)}>{book.name}</li>
                                  )
                         }  
                     </>
                 }
             </ul>
-            <BookDetails />
+            <BookDetails bookId = { bookId }/>
         </div>
     )
 }
