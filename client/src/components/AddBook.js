@@ -1,17 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import { graphql } from 'react-apollo';
 import * as compose from 'lodash/flowRight'
-import {getAuthors, addBookMutation} from './../queries/queries'
+import {getAuthors, addBookMutation, getBooksQuery} from './../queries/queries'
 
 function AddBook(props) {
 
-    const addBookMutation = props.addBookMutation;
     const [authors, setAuthors ] = useState([])
     useEffect(() => {
-        fetchAuthors()
+        fetchAuthors();
+        
     });
 
-    const fetchAuthors =()=> setAuthors(props.getAuthorsQuery.authors);
+    const fetchAuthors = () => setAuthors(props.getAuthorsQuery.authors);
     const [book, setBook] = useState({
         name: '',
         genre: '',
@@ -25,16 +25,18 @@ function AddBook(props) {
     }
     const handleSubmit = e => {
         e.preventDefault();
-        addBookMutation({
+        props.addBookMutation({
             variables: {
                 name: book.name,
                 genre: book.genre,
-                authorId: book.authorId
-            }
+                authorId: book.authorId,
+                
+            },
+            refetchQueries : [ { query: getBooksQuery} ]
         })
+
     }
     return (
-        // <Mutation
         <form id="add-book" onSubmit={handleSubmit}>
         <div className="field">
             <label>Book name:</label>
@@ -49,8 +51,10 @@ function AddBook(props) {
             <select name='authorId' onChange={handleChange}>
                 <option>Select author</option>
                 {   
-                    Boolean(authors) 
-                        && 
+                   !authors 
+                        ?
+                   <option>Loading authors</option> 
+                        :
                     authors.map(author => 
                         <option 
                             key={author.id} 
@@ -63,7 +67,6 @@ function AddBook(props) {
         <button>+</button>
 
     </form>
-    // </Mutation>
     );
 }
 
@@ -78,5 +81,6 @@ export default compose(
         addBookMutation,
         {
             name: "addBookMutation"
-        })
+        }),
+    
 )(AddBook)

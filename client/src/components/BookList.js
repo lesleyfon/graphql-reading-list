@@ -17,14 +17,13 @@ function BookList(props) {
     return (
         <div>
             <ul id='book-list'>
-                {props.data.loading 
+                {props.data.loading || !books
                     ? 
                     <p>Loading Books</p> 
                     :
                     <>
                         {
-                            Boolean(books) 
-                                && 
+                           
                             books.map(book =>
                                  <li key={book.id}>{book.name}</li>
                                  )
