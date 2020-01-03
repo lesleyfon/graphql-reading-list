@@ -15,6 +15,7 @@ const {
 } = graphql;
 //Define schemas for aur graphql queries 
 const BookType = new GraphQLObjectType({
+
     name: 'Book',
     fields: () => ({
         id: {
@@ -29,6 +30,7 @@ const BookType = new GraphQLObjectType({
         author: {
             type: AuthorType,
             resolve(parent, args){
+
                 //parent is equal to the book model and we get the autorId from the book model
                 return AuthorModel.findById(parent.authorId)
             }
@@ -96,13 +98,13 @@ const RootQuery = new GraphQLObjectType({
         books: {
             type: new GraphQLList(BookType),
              resolve(parent, args){
-                return BookModel.find({})
+                return BookModel.find({});
             }
         },
         authors: {
             type: new GraphQLList(AuthorType),
             resolve(parent, args){
-                return AuthorModel.find({})
+                return AuthorModel.find({});
             }
         }
     }
@@ -149,11 +151,13 @@ const Mutations = new GraphQLObjectType({
                     genre: args.genre,
                     authorId: args.authorId
                 });
-                return book.save()
+                return book.save();
             }
         }
     }
-})
+});
+
+
 module.exports = new  GraphQLSchema({
     query: RootQuery,
     mutation: Mutations,
