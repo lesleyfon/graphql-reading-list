@@ -29,6 +29,10 @@ function BookList(props) {
 		setBookId(id);
 	};
 
+	if (books) {
+		let arr = books.filter((book) => book.name.includes("Fun"));
+		console.log(arr);
+	}
 	return (
 		<div>
 			<ul id="book-list">

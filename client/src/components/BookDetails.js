@@ -1,12 +1,25 @@
 import React from "react";
+
+import * as compose from "lodash/flowRight";
 import { graphql } from "react-apollo";
-import { getBookQuery } from "./../queries/queries";
+import { getBooksQuery, getBookQuery, deleteBook } from "./../queries/queries";
 
 // Delete Svg
 import DeleteSVG from "./../assets/trash.svg";
 
 function BookDetails(props) {
 	const { book } = props.data;
+
+	// Handle delete
+	const handleDelete = () => {
+		props.deleteBook({
+			variables: {
+				id: props.bookId,
+			},
+
+			refetchQueries: [{ query: getBooksQuery }],
+		});
+	};
 	const displayBookDetails = () => {
 		if (book) {
 			return (
@@ -21,7 +34,7 @@ function BookDetails(props) {
 						))}
 					</ul>
 					<div className="delete-container">
-						<img src={DeleteSVG} alt="Delete Book" />
+						<img src={DeleteSVG} alt="Delete Book" onClick={handleDelete} />
 					</div>
 				</div>
 			);
@@ -32,12 +45,17 @@ function BookDetails(props) {
 	return <div id="book-details">{displayBookDetails()}</div>;
 }
 
-export default graphql(getBookQuery, {
-	options: (props) => {
-		return {
-			variables: {
-				id: props.bookId,
-			},
-		};
-	},
-})(BookDetails);
+export default compose(
+	graphql(getBookQuery, {
+		options: (props) => {
+			return {
+				variables: {
+					id: props.bookId,
+				},
+			};
+		},
+	}),
+	graphql(deleteBook, {
+		name: "deleteBook",
+	})
+)(BookDetails);
