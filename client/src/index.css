@@ -90,3 +90,13 @@ form button {
 	box-sizing: border-box;
 	color: #fff;
 }
+.delete-container {
+	width: 30px;
+	height: 70px;
+	float: right;
+}
+.delete-container img {
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+}
