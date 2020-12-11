@@ -35,7 +35,7 @@ export const addBookMutation = gql`
 export const deleteBook = gql`
 	mutation($id: ID!) {
 		deleteBook(id: $id) {
-			message
+			id
 		}
 	}
 `;
