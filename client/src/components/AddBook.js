@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { graphql } from "react-apollo";
 import * as compose from "lodash/flowRight";
 import { getAuthors, addBookMutation, getBooksQuery } from "./../queries/queries";
@@ -7,12 +7,31 @@ function AddBook(props) {
 	// Component Stat
 	const [authors, setAuthors] = useState([]);
 	const [error, setError] = useState(false);
+	const selectRef = useRef(null);
 
+	// UseEffect fot Fetching authors
 	useEffect(() => {
 		fetchAuthors();
 	});
 
+	// UseEffect for adding new author
+	useEffect(() => {
+		//
+		window.$("document").ready(() => {
+			window
+				.$("#select-id")
+				.select2({
+					tags: true,
+				})
+				.on("change", (ev) => {
+					// MAke the mutation to the addAuthor here
+				});
+		});
+	});
+
+	//
 	const fetchAuthors = () => setAuthors(props.getAuthorsQuery.authors);
+	//
 	const [book, setBook] = useState({
 		name: "",
 		genre: "",
@@ -54,6 +73,7 @@ function AddBook(props) {
 			authorId: "",
 		});
 	};
+
 	return (
 		<form id="add-book" onSubmit={handleSubmit}>
 			{error ? <h3 className="form-error">Please Fill All Form Fields...</h3> : null}
@@ -67,7 +87,7 @@ function AddBook(props) {
 			</div>
 			<div className="field">
 				<label>Author:</label>
-				<select name="authorId" onChange={handleChange}>
+				<select name="authorId" id="select-id" onChange={handleChange} ref={selectRef}>
 					<option>Select author</option>
 					{!authors ? (
 						<option>Loading authors</option>
@@ -80,7 +100,8 @@ function AddBook(props) {
 					)}
 				</select>
 			</div>
-			<button>+</button>
+			<div className="add-author">Add author</div>
+			<button className="submit-book">+</button>
 		</form>
 	);
 }
