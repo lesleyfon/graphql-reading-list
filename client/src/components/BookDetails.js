@@ -19,7 +19,10 @@ function BookDetails(props) {
 
 			refetchQueries: [{ query: getBooksQuery }],
 		});
+		// Setter to update the BookId state so this components re-renders
+		props.setUpdateBookId();
 	};
+
 	const displayBookDetails = () => {
 		if (book) {
 			return (

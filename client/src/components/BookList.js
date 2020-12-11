@@ -28,11 +28,8 @@ function BookList(props) {
 
 		setBookId(id);
 	};
+	const setUpdateBookId = () => setBookId(null);
 
-	if (books) {
-		let arr = books.filter((book) => book.name.includes("Fun"));
-		console.log(arr);
-	}
 	return (
 		<div>
 			<ul id="book-list">
@@ -48,7 +45,7 @@ function BookList(props) {
 					</>
 				)}
 			</ul>
-			<BookDetails bookId={bookId} />
+			<BookDetails bookId={bookId} setUpdateBookId={setUpdateBookId} />
 		</div>
 	);
 }
