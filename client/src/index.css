@@ -37,6 +37,7 @@ form {
 	left: 0;
 	bottom: 0;
 	width: 400px;
+	min-height: 150px;
 }
 
 form .form-error {
@@ -63,7 +64,7 @@ form input {
 	box-sizing: border-box;
 }
 
-form button {
+form .submit-book {
 	color: #fff;
 	font-size: 2em;
 	background: #ad1457;
@@ -73,6 +74,21 @@ form button {
 	cursor: pointer;
 	position: absolute;
 	left: 10px;
+	bottom: 10px;
+	outline: none;
+}
+form .add-author {
+	color: #fff;
+	font-size: 1em;
+	line-height: 2rem;
+	border-radius: 5px;
+	height: 2rem;
+	background: #ad1457;
+	border: 0;
+	padding: 0 10px;
+	cursor: pointer;
+	position: absolute;
+	right: 22px;
 	bottom: 10px;
 	outline: none;
 }
