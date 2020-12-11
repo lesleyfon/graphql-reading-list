@@ -4,7 +4,10 @@ import * as compose from "lodash/flowRight";
 import { getAuthors, addBookMutation, getBooksQuery } from "./../queries/queries";
 
 function AddBook(props) {
+	// Component Stat
 	const [authors, setAuthors] = useState([]);
+	const [error, setError] = useState(false);
+
 	useEffect(() => {
 		fetchAuthors();
 	});
@@ -23,12 +26,24 @@ function AddBook(props) {
 	};
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
+		// Set error state to true if user doesn't fill out all form fields
+		if (!book.name.trim() || !book.genre.trim()) {
+			setError(true);
+			return;
+		}
+		// Set error state to false if everything is okay
+		setError(false);
+
+		// Add books mutation
 		props.addBookMutation({
 			variables: {
 				name: book.name,
 				genre: book.genre,
 				authorId: book.authorId,
 			},
+
+			// After adding a book, refetch books so book we just added gets updated to the display
 			refetchQueries: [{ query: getBooksQuery }],
 		});
 
@@ -41,6 +56,7 @@ function AddBook(props) {
 	};
 	return (
 		<form id="add-book" onSubmit={handleSubmit}>
+			{error ? <h3 className="form-error">Please Fill All Form Fields...</h3> : null}
 			<div className="field">
 				<label>Book name:</label>
 				<input type="text" name="name" onChange={handleChange} />
