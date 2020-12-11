@@ -158,8 +158,14 @@ const Mutations = new GraphQLObjectType({
 			resolve(parent, args) {
 				let bookId = args.id;
 				// Model to delete Book
-				BookModel.deleteOne({ _id: bookId });
-				console.log("BOOK DELETED");
+
+				BookModel.deleteOne({ _id: bookId })
+					.then((data) => {
+						console.log("BOOK DELETED");
+					})
+					.catch((err) => {
+						console.log("err");
+					});
 				return bookId;
 			},
 		},
