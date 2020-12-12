@@ -60,7 +60,7 @@ export const getBookQuery = gql`
 	}
 `;
 
-// Add author
+// Add author mutation
 export const addAuthor = gql`
 	mutation($name: String!, $age: Int!) {
 		addAuthor(name: $name, age: $age) {

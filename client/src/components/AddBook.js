@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { graphql } from "react-apollo";
 import * as compose from "lodash/flowRight";
-import { getAuthors, addBookMutation, getBooksQuery } from "./../queries/queries";
+import { getAuthors, addBookMutation, getBooksQuery, addAuthor } from "./../queries/queries";
 
 function AddBook(props) {
 	// Component Stat
@@ -9,7 +9,7 @@ function AddBook(props) {
 	const [error, setError] = useState(false);
 
 	// Determines which form inputs to display
-	const [switchDisplay, setSwitchDisplay] = useState(false);
+	const [switchDisplay, setSwitchDisplay] = useState(true);
 
 	// UseEffect fot Fetching authors
 	useEffect(() => {
@@ -87,6 +87,19 @@ function AddBook(props) {
 				return;
 			}
 			setError(false);
+
+			// Make a mutation to add an author
+			props.addAuthor({
+				variables: {
+					name: authorDetails.authorName,
+					age: Number(authorDetails.authorAge),
+				},
+				refetchQueries: [{ query: getAuthors }],
+			});
+			setAuthorsDetails({
+				authorAge: "",
+				authorName: "",
+			});
 		}
 	};
 
@@ -163,5 +176,8 @@ export default compose(
 	}),
 	graphql(addBookMutation, {
 		name: "addBookMutation",
+	}),
+	graphql(addAuthor, {
+		name: "addAuthor",
 	})
 )(AddBook);
