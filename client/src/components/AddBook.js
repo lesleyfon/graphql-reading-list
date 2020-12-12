@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { graphql } from "react-apollo";
 import * as compose from "lodash/flowRight";
 import { getAuthors, addBookMutation, getBooksQuery } from "./../queries/queries";
@@ -7,87 +7,136 @@ function AddBook(props) {
 	// Component Stat
 	const [authors, setAuthors] = useState([]);
 	const [error, setError] = useState(false);
-	const selectRef = useRef(null);
+
+	// Determines which form inputs to display
+	const [switchDisplay, setSwitchDisplay] = useState(false);
 
 	// UseEffect fot Fetching authors
 	useEffect(() => {
 		fetchAuthors();
 	});
 
-	// UseEffect for adding new author
-	useEffect(() => {
-		//
-		window.$("document").ready(() => {
-			window
-				.$("#select-id")
-				.select2({
-					tags: true,
-				})
-				.on("change", (ev) => {
-					// MAke the mutation to the addAuthor here
-				});
-		});
-	});
-
 	//
 	const fetchAuthors = () => setAuthors(props.getAuthorsQuery.authors);
-	//
+	//For form field
 	const [book, setBook] = useState({
 		name: "",
 		genre: "",
 		authorId: "",
 	});
+
+	// For form fields
+	const [authorDetails, setAuthorsDetails] = useState({
+		authorName: "",
+		authorAge: "",
+	});
+
+	// Handle Change for the Book fields
 	const handleChange = (e) => {
+		console.log(e.target.name, e.target.value);
 		setBook({
 			...book,
 			[e.target.name]: e.target.value,
 		});
 	};
+
+	// Handle Change for the Author fields
+	const handleAuthorFieldChange = (e) => {
+		setAuthorsDetails({
+			...authorDetails,
+			[e.target.name]: e.target.value,
+		});
+	};
+
+	// Handle Submit
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
-		// Set error state to true if user doesn't fill out all form fields
-		if (!book.name.trim() || !book.genre.trim()) {
-			setError(true);
-			return;
+		// IF switch is false that means we are trying submit to a book
+		if (switchDisplay === false) {
+			if (!book.name.trim() || !book.genre.trim() || !book.authorId.trim()) {
+				// Set error state to true if user doesn't fill out all form fields
+				setError(true);
+				return;
+			}
+			// Set error state to false if everything is okay
+			setError(false);
+
+			// Add books mutation
+			props.addBookMutation({
+				variables: {
+					name: book.name,
+					genre: book.genre,
+					authorId: book.authorId,
+				},
+
+				// After adding a book, refetch books so book we just added gets updated to the display
+				refetchQueries: [{ query: getBooksQuery }],
+			});
+
+			// Reset form fields
+			setBook({
+				name: "",
+				genre: "",
+				authorId: "",
+			});
+		} else {
+			if (!authorDetails.authorName.trim() || !Number(authorDetails.authorAge)) {
+				// Set error state to true if user doesn't fill out all form fields
+				setError(true);
+				return;
+			}
+			setError(false);
 		}
-		// Set error state to false if everything is okay
-		setError(false);
-
-		// Add books mutation
-		props.addBookMutation({
-			variables: {
-				name: book.name,
-				genre: book.genre,
-				authorId: book.authorId,
-			},
-
-			// After adding a book, refetch books so book we just added gets updated to the display
-			refetchQueries: [{ query: getBooksQuery }],
-		});
-
-		// Reset form fields
-		setBook({
-			name: "",
-			genre: "",
-			authorId: "",
-		});
 	};
 
 	return (
 		<form id="add-book" onSubmit={handleSubmit}>
 			{error ? <h3 className="form-error">Please Fill All Form Fields...</h3> : null}
 			<div className="field">
-				<label>Book name:</label>
-				<input type="text" name="name" onChange={handleChange} />
+				{switchDisplay ? (
+					<>
+						<label>Author name:</label>
+						<input
+							type="text"
+							name="authorName"
+							value={authorDetails.authorName}
+							onChange={handleAuthorFieldChange}
+						/>
+					</>
+				) : (
+					<>
+						<label>Book name:</label>
+						<input type="text" name="name" value={book.name} onChange={handleChange} />
+					</>
+				)}
 			</div>
 			<div className="field">
-				<label>Genre:</label>
-				<input type="text" name="genre" onChange={handleChange} />
+				{switchDisplay ? (
+					<>
+						<label>Author Age:</label>
+						<input
+							type="number"
+							name="authorAge"
+							value={authorDetails.authorAge}
+							onChange={handleAuthorFieldChange}
+						/>
+					</>
+				) : (
+					<>
+						<label>Genre:</label>
+						<input
+							type="text"
+							name="genre"
+							value={book.genre}
+							onChange={handleChange}
+						/>
+					</>
+				)}
 			</div>
 			<div className="field">
 				<label>Author:</label>
-				<select name="authorId" id="select-id" onChange={handleChange} ref={selectRef}>
+				<select name="authorId" id="select-id" onChange={handleChange}>
 					<option>Select author</option>
 					{!authors ? (
 						<option>Loading authors</option>
@@ -100,7 +149,9 @@ function AddBook(props) {
 					)}
 				</select>
 			</div>
-			<div className="add-author">Add author</div>
+			<div className="add-author" onClick={() => setSwitchDisplay(!switchDisplay)}>
+				{switchDisplay ? "Add book" : "Add author"}
+			</div>
 			<button className="submit-book">+</button>
 		</form>
 	);
